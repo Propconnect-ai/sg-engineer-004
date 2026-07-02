@@ -33,7 +33,7 @@ AWS = {
     "ElastiCache (Redis, 2 nodes)": (319.74, "cache.r7g.large x2, on-demand, 100% util"),
     "ALB":                          (39.79,  "1 ALB, EC2/IP targets, ~100 new conn/sec"),
     "S3 (cold)":                    (32.20,  "1,400 GB S3 Standard"),
-    "CloudWatch":                   (90.67,  "50 metrics + 150 GB logs ingested, 1-mo retention"),
+    "CloudWatch":                   (90.68,  "50 metrics + 150 GB logs ingested, 1-mo retention"),
 }
 
 # ---- ClickHouse Cloud Scale tier: computed from published per-unit rates ----
