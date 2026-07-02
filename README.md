@@ -10,9 +10,9 @@ This repository contains the architecture decisions, migration and validation st
 
 If you have 30–45 minutes, read in this order:
 
-1. **`executive-narrative.md`** — Recommended starting point. Explains the problem, the governing thesis, and how the repository is organized.
+1. **`Executive-Narrative.md`** — Recommended starting point. Explains the problem, the governing thesis, and how the repository is organized.
 2. **`architecture/`** — The five ADRs and architecture diagram. This is the design itself.
-3. **`validation-strategy.md`** — The strongest single indicator of how the design establishes correctness before production.
+3. **`Validation-Strategy.md`** — The strongest single indicator of how the design establishes correctness before production.
 4. **`evidence/`** — Review the executable durability artifact if you want to verify the central engineering claim rather than simply read about it.
 
 If you have less time, the Executive Narrative provides sufficient context before exploring the individual ADRs.
@@ -23,7 +23,7 @@ If you have less time, the Executive Narrative provides sufficient context befor
 
 ### Core architecture
 
-**`executive-narrative.md`**
+**`Executive-Narrative.md`**
 
 Orientation document for reviewers. Introduces the problem, the governing architectural thesis, and the reasoning behind the overall design.
 
@@ -31,23 +31,23 @@ Orientation document for reviewers. Introduces the problem, the governing archit
 
 Five Architecture Decision Records (ADR-000 through ADR-004) together with the architecture diagram.
 
-- `ADR-000` — Architecture Principles
-- `ADR-001` — Durable Ingestion
-- `ADR-002` — Serving Layer Split
-- `ADR-003` — Analytical Datastore
-- `ADR-004` — Identity Resolution
+- `ADR-000-Architecture-Principles.md` — Architecture Principles
+- `ADR-001-Durable-Ingestion.md` — Durable Ingestion
+- `ADR-002-Serving-Layer.md` — Serving Layer Split
+- `ADR-003-Analytical-Datastore.md` — Analytical Datastore
+- `ADR-004-Identity-Resolution.md` — Identity Resolution
 
 **`architecture/architecture-diagram.svg`**
 
-Complete architecture overview showing ingestion, durable log, serving projections, identity resolution, and downstream consumers.
+Complete architecture overview showing ingestion, durable log, serving projections, identity resolution, and downstream consumers. A companion `architecture-diagram.png` is included for convenience.
 
 ### Strategy documents
 
 These documents explain how the architecture is introduced and operated safely.
 
-- `migration-strategy.md`
-- `validation-strategy.md`
-- `rollback-strategy.md`
+- `Migration-Strategy.md`
+- `Validation-Strategy.md`
+- `Rollback-Strategy.md`
 
 Together they describe migration sequencing, validation gates, and rollback criteria.
 
@@ -55,22 +55,22 @@ Together they describe migration sequencing, validation gates, and rollback crit
 
 These documents explicitly define the limits of the design.
 
-- `what-breaks-this.md`
-- `what-stays-human.md`
+- `What-Breaks-This.md`
+- `What-Stays-Human.md`
 
 Rather than pretending the architecture solves every problem, they document where redesign becomes necessary and which decisions intentionally remain under human ownership.
 
 ### Supporting documentation
 
-**`evidence-log.md`**
+**`Evidence-Log.md`**
 
 Maps each major architectural claim to the strongest supporting evidence and identifies what the submission does not claim.
 
-**`cost-validation.md`**
+**`Cost-Validation.md`**
 
 Demonstrates that the proposed architecture operates comfortably within the stated monthly infrastructure budget.
 
-**`ai-usage-disclosure.md`**
+**`AI-Usage-Disclosure.md`**
 
 Explains how AI tools were used during preparation while identifying the architectural decisions and engineering judgment that remained the author's responsibility.
 
@@ -78,15 +78,15 @@ Explains how AI tools were used during preparation while identifying the archite
 
 **`evidence/`**
 
-Contains the executable operating artifact supporting ADR-001.
+Contains the executable operating artifact supporting ADR-001, together with the cost and pricing evidence.
 
-Current contents include:
-
-- `adr001_durability_invariant.py`
+- `adr001_durability_invariant.py` — the executable durability test
+- AWS Pricing Calculator screenshots and service breakdown
+- ClickHouse Cloud pricing screenshot
 
 ### Cost model
 
-**`cost-model.py`**
+**`Cost-Model.py`**
 
 Executable Python cost model used to estimate monthly infrastructure costs under the stated workload assumptions and validate compliance with the $50,000/month operating constraint.
 
