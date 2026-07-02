@@ -1,1 +1,39 @@
+# Evidence Log
 
+**Purpose:** An index mapping the submission's major engineering claims to their strongest available evidence, with the highest honestly-supported tier for each. It is not a file list. A reviewer should be able to read a claim, see what supports it, and know the evidence tier without inflation.
+
+**Tiers** (per the public scoring guide): 0 claims only · 1 screenshots · 2 demo artifact · 3 logs or source records · 4 before/after measured data · 5 independent verification.
+
+---
+
+| ID | Engineering Claim | Supporting Evidence | Tier | Notes |
+|----|-------------------|---------------------|------|-------|
+| E1 | The acknowledgment-after-durable-commit contract holds: every acknowledged event has exactly one durable record, and under a durable-boundary outage the collector rejects (retryably) rather than acknowledges-and-loses. | Operating artifact (`evidence/adr001_durability_invariant.py`) — a deterministic correctness test with a naive control and the proposed design, run under an injected outage, reconciling acked vs. durable records. | 4 | Measured before/after under identical conditions (control violates the invariant; proposed holds). Deterministic and reviewer-reproducible, which is a path toward Tier 5 but is not itself independent verification. Proves the contract under a simulated failure model, not the production durable log. |
+| E2 | The design fails loudly on its own violation: if the durability contract is broken, the test detects it rather than passing silently. | Same artifact — non-zero exit and explicit FAIL when the invariant is violated; verified by breaking the collector and observing failure. | 4 | Falsifiability is itself demonstrated, not asserted. Same scope caveat as E1. |
+| E3 | Every major architectural decision is documented with options, trade-offs, risks, assumptions, and rationale. | ADR-000 through ADR-004 (`architecture/`). | 2 | Inspectable decision records. Documented reasoning, not measured outcome. |
+| E4 | The end-to-end architecture is coherent and every component traces to a decision. | Architecture diagram (`architecture/architecture-diagram.svg`, PNG companion). | 2 | Inspectable artifact; each element traces to an ADR. |
+| E5 | The design was developed iteratively, with decisions revised as reasoning matured (not produced fully-formed). | Repository commit history (e.g. the ADR-001 rename from an earlier framing). | 3 | Source records — the commit trail is an actual log of the work over time. |
+| E6 | The system can be migrated from the existing platform without data loss, via replay and parallel operation, with a defined cutover gate. | Migration Strategy. | 2 | Documented strategy and gated criteria; a plan, not an executed migration. |
+| E7 | Correctness for production adoption is defined by measurable acceptance criteria across ingestion, serving, identity, replay, deletion impact, and equivalence. | Validation Strategy. | 2 | Documented acceptance standard; criteria defined, not yet executed against production. |
+| E8 | The system can safely return to the existing platform if the proposed platform should not remain authoritative, preserving durable data and investigation evidence. | Rollback Strategy. | 2 | Documented strategy; reversibility is a property of the migration sequence, not an executed rollback. |
+| E9 | The architecture's limits are known: the conditions under which it would need redesign are identified and tied to stated assumptions. | What Breaks This Design. | 2 | Documented judgment; each limit is the inverse of a labeled assumption. |
+| E10 | Accountability-bearing decisions are deliberately reserved for humans, distinct from automated deterministic operations. | What Stays Human. | 2 | Documented reasoning; each reserved decision traces to a prior document. |
+| E11 | The workload is right-sized: ~578 events/sec average, ~5,800/sec at peak, derived from the stated 50M events/day. | Arithmetic derivation from the brief's observed daily volume (50M/day ÷ 86,400s; ×10 for the stated peak). | 0 | Tier 0 on the *evidence* axis (a checkable derivation, not a measurement or artifact of the result), but not an unsupported assertion: the input is `[Observed, brief]` and the result is `[Estimated, derived]` and independently re-computable. The tier reflects absence of measured evidence, not absence of support. |
+| E12 | The design fits within the $50K/month budget ceiling. | AWS Pricing Calculator exported estimate (PDF), AWS calculator screenshots, ClickHouse Cloud official pricing screenshots, and runnable `cost_model.py` reproducing the calculation. | 1 | AWS calculator evidence provides Tier 1 vendor-produced screenshots/export ($855.39/mo, six services); ClickHouse benchmarked from official pricing; total ~$1.5K/mo, ~3% of ceiling. `cost_model.py` is an inspectable Tier 3 source record reproducing the calculation. Combined, the budget claim is supported by independently inspectable evidence rather than reasoning alone. The claim is listed at Tier 1 (the highest single tier honestly supporting it); the Tier 3 script reproduces the derivation but does not independently verify vendor pricing. |
+| E13 | The design fits the two-engineer operating constraint. | Reasoning in ADR-000/003 (boring, managed, few systems; one new datastore). | 2 | Reasoned from managed-service choices; operability is a design judgment, not a measured outcome. |
+
+---
+
+## Evidence Coverage
+
+**Supported by inspectable artifacts (Tier 2+).** The bulk of the packet — the five ADRs, the architecture diagram, and the five engineering strategy documents (migration, validation, rollback, what-breaks-it, what-stays-human) — is inspectable. A reviewer can open each and trace claims to decisions. These are genuine Tier 2 artifacts: they document decisions, plans, and reasoning, not measured outcomes, and they are labeled accordingly rather than represented as measured results.
+
+**Supported by measured before/after (Tier 4).** The central technical claim — the acknowledgment durability contract (E1, E2) — is supported by a measured, deterministic before/after with a control. This is the strongest evidence in the packet. It is honestly Tier 4, not Tier 5: it is reviewer-reproducible, but no independent party has yet verified it, and Tier 5 requires that independent confirmation. The artifact proves the *contract* under a deterministic failure model; validating the same contract against the production durable log is required before adoption and is deliberately out of the artifact's scope.
+
+**Supported by source records (Tier 3).** The claim that the design was developed iteratively (E5) is supported by the repository commit history — an actual record of the work over time, including revised decisions.
+
+**Relying on written reasoning only (Tier 0–2).** Two claims rest primarily on reasoning rather than artifact or measurement: the derived throughput figures (E11), which are arithmetic from the brief's observed volume and labeled estimated; and the two-engineer operability fit (E13), which is reasoned from the design's managed-service choices. These are marked at their honest tier and not upgraded. Note that the *budget* claim (E12) is distinct — it is calculator-verified (Tier 1), not reasoning-only.
+
+**Supported by screenshots / vendor export (Tier 1).** The budget claim (E12) is backed by the AWS Pricing Calculator's exported estimate, AWS calculator screenshots, and ClickHouse Cloud pricing screenshots held in the evidence repository — vendor-produced artifacts and exported pricing estimates that a reviewer can inspect or reproduce using the same published pricing inputs.
+
+**What the packet does not claim.** There is no production deployment, no customer, no live traffic, and no independent verification, so no claim is marked Tier 5. Evidence tiers are assigned to the strongest honestly-supported level and no higher.
